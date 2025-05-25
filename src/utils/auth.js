@@ -25,3 +25,16 @@ export function getUserStatus() {
         return null;
     }
 }
+
+export function getUserId() {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+        const decoded = jwtDecode(token);
+        return decoded?.id;
+    } catch (e) {
+        console.error('Failed to decode token:', e);
+        return null;
+    }
+}

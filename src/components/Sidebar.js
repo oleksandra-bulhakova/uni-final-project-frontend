@@ -3,10 +3,12 @@ import { useAuth } from '../context/AuthContext';
 import { FiUser, FiUsers, FiBriefcase, FiFileText, FiClipboard } from 'react-icons/fi';
 import logo from "../assets/logo.png";
 import {Link} from "react-router-dom";
+import { getUserId } from '../utils/auth';
 
 
 export default function Sidebar() {
     const { isAuthenticated } = useAuth();
+    const userId = getUserId();
 
     if (!isAuthenticated) return null;
 
@@ -16,9 +18,12 @@ export default function Sidebar() {
                 <img src={logo} alt="SmartBase Logo" className="h-24"/>
             </Link>
 
-            <button className="mt-8 flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl">
+            <Link
+                to={`/user/${userId}`}
+                className="mt-8 flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl"
+            >
                 <FiUser size={28} /> Мій профіль
-            </button>
+            </Link>
             <button className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl">
                 <FiUsers size={28} /> Користувачі
             </button>

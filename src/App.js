@@ -7,6 +7,7 @@ import MainPage from './pages/MainPage';
 import Header from './components/Header';
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import Sidebar from './components/Sidebar';
+import UserProfilePage from "./pages/UserProfilePage";
 
 export default function App() {
     return (
@@ -25,6 +26,7 @@ export default function App() {
                     <Route path="/finish" element={<FinishRegistrationPage/>}/>
                     <Route path="/main" element={<MainPage/>}/>
                     <Route path="/change-password" element={<ChangePasswordPage/>}/>
+                    <Route path="/user/:userId" element={<UserProfilePage/>}/>
                 </Routes>
                 <ToastContainer
                     position="top-center"
