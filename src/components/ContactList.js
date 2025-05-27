@@ -1,6 +1,6 @@
 import React from "react";
 
-function ContactList({ contacts }) {
+function ContactList({contacts}) {
     if (!contacts || contacts.length === 0) {
         return <p>Контакти не вказано</p>;
     }
@@ -17,9 +17,9 @@ function ContactList({ contacts }) {
 
     return (
         <div className="space-y-4 w-full">
-            {contacts.map(({ id, type, contact }) => (
+            {contacts.map(({id, type, contact}) => (
                 <div key={id}>
-                    <label className="block w-full text-sm font-medium text-gray-700 mb-1">
+                    <label className="block w-full text-xl font-medium text-gray-700 mb-1">
                         {typeLabels[type] || type}
                     </label>
                     <input
@@ -27,7 +27,7 @@ function ContactList({ contacts }) {
                         value={contact}
                         readOnly
                         className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2"
-                        style={{ width: "100%" }}
+                        style={{width: "100%"}}
                     />
                 </div>
             ))}

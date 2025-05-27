@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {createContext, useContext, useState, useEffect} from 'react';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
 
     useEffect(() => {
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{isAuthenticated, login, logout}}>
             {children}
         </AuthContext.Provider>
     );

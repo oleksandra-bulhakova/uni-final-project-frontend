@@ -1,11 +1,13 @@
 import React from "react";
 
-function AddressBlock({ address }) {
+function AddressBlock({address}) {
     if (!address) {
-        return <p>Адресу не вказано</p>;
+        return (<button className="bg-[#FE7C7C] hover:bg-[#58618E] text-white px-4 py-2 rounded text-xl">
+            Додати адресу
+        </button>);
     }
 
-    const { country, city, street, building, apartment } = address;
+    const {country, city, street, building, apartment} = address;
 
     return (
         <div className="border p-4 rounded-md shadow-sm">

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, {useState} from "react";
+import {Link} from "react-router-dom";
 
-function VacancyList({ vacancies }) {
+function VacancyList({vacancies}) {
     const [currentPage, setCurrentPage] = useState(1);
-    const vacanciesPerPage = 10;
+    const vacanciesPerPage = 5;
 
     const totalPages = Math.ceil(vacancies.length / vacanciesPerPage);
     const startIndex = (currentPage - 1) * vacanciesPerPage;
@@ -17,9 +17,9 @@ function VacancyList({ vacancies }) {
 
     return (
         <div className="space-y-3">
-            <h2 className="text-lg font-semibold">Vacancies</h2>
+            <h2 className="text-xl text-gray-700 font-medium">Вакансії</h2>
             {currentVacancies.map((vacancy) => (
-                <div key={vacancy.id} className="border p-3 rounded-md shadow-sm">
+                <div key={vacancy.id} className="border p-3 rounded-md shadow-sm text-xl">
                     <Link
                         to={`/vacancies/${vacancy.id}`}
                         className="text-blue-600 hover:underline"
@@ -38,7 +38,7 @@ function VacancyList({ vacancies }) {
                     Prev
                 </button>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
                     <button
                         key={page}
                         onClick={() => handlePageChange(page)}

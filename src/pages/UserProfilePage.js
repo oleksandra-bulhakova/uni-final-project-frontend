@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 import api from "../api/axiosInstance";
 import ProfileHeader from "../components/ProfileHeader";
 import ContactList from "../components/ContactList";
@@ -8,7 +8,7 @@ import UserDetails from "../components/UserDetails";
 import AddressBlock from "../components/AddressBlock";
 
 export default function UserProfilePage() {
-    const { userId } = useParams();
+    const {userId} = useParams();
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function UserProfilePage() {
 
             <div className="flex flex-col md:flex-row gap-12 w-full">
                 <div className="w-full md:w-[300px] space-y-6">
-                    <ProfileHeader imagePath={user.imagePath} setUser={setUser} />
+                    <ProfileHeader imagePath={user.imagePath} setUser={setUser}/>
                     <VacancyList vacancies={user.vacancies}/>
                 </div>
 
@@ -42,6 +42,7 @@ export default function UserProfilePage() {
                         firstName={user.firstName}
                         lastName={user.lastName}
                         userRole={user.userRole}
+                        userStatus={user.active}
                     />
                     <ContactList contacts={user.contacts}/>
                     <AddressBlock address={user.address}/>
