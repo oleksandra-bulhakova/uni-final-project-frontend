@@ -22,13 +22,23 @@ function ContactList({contacts}) {
                     <label className="block w-full text-xl font-medium text-gray-700 mb-1">
                         {typeLabels[type] || type}
                     </label>
-                    <input
-                        type="text"
-                        value={contact}
-                        readOnly
-                        className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2"
-                        style={{width: "100%"}}
-                    />
+                    {type === "LINK" ? (
+                        <a
+                            href={contact.startsWith("http") ? contact : `https://${contact}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-blue-700 underline break-words text-base"
+                        >
+                            {contact}
+                        </a>
+                    ) : (
+                        <input
+                            type="text"
+                            value={contact}
+                            readOnly
+                            className="w-full bg-gray-100 border border-gray-300 rounded px-3 py-2"
+                        />
+                    )}
                 </div>
             ))}
         </div>

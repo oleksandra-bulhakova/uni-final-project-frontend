@@ -15,6 +15,11 @@ import AddVacancyPage from "./pages/AddVacancyPage";
 import AllVacanciesPage from "./pages/AllVacanciesPage";
 import HomePageGuest from "./pages/HomePageGuest";
 import {getUserId} from "./utils/auth";
+import VacancyDetailsPage from "./pages/VacancyDetailsPage";
+import ClientDetailsPage from "./pages/ClientDetailsPage";
+import CreateCandidatePage from "./pages/CreateCandidatePage";
+import AllCandidatesPage from "./pages/AllCandidatesPage";
+import CandidateDetailsPage from "./pages/CandidateDetailsPage";
 
 export default function App() {
     function HomeRoute() {
@@ -45,6 +50,11 @@ export default function App() {
                         <Route path="/users" element={<AllUsersPage/>}/>
                         <Route path="/add-vacancy" element={<AddVacancyPage/>}/>
                         <Route path="/vacancies" element={<AllVacanciesPage/>}/>
+                        <Route path="/vacancies/:vacancyId" element={<VacancyDetailsPage/>}/>
+                        <Route path="/clients/:clientId" element={<ClientDetailsPage/>}/>
+                        <Route path="/candidates" element={<AllCandidatesPage/>}/>
+                        <Route path="/create-candidate" element={<CreateCandidatePage/>}/>
+                        <Route path="/candidates/:candidateId" element={<CandidateDetailsPage/>}/>
                     </Routes>
                 </main>
             </div>

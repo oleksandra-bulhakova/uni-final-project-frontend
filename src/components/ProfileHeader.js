@@ -1,9 +1,8 @@
 import empty from '../assets/empty.png';
 import React, { useRef } from 'react';
 import api from '../api/axiosInstance';
-import {getUserId} from "../utils/auth";
 
-export default function ProfileHeader({ imagePath, setUser }) {
+export default function ProfileHeader({ imagePath, setUser, userId }) {
     const fileInputRef = useRef();
     const handleIconClick = () => {
         fileInputRef.current.click();
@@ -22,7 +21,6 @@ export default function ProfileHeader({ imagePath, setUser }) {
             });
 
             const uploadedImageUrl = response.data;
-            const userId = getUserId();
 
             await api.put(`/users/set-image-path/${userId}`, `"${uploadedImageUrl}"`, {
                 headers: {

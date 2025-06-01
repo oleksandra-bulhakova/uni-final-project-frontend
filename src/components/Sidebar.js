@@ -26,10 +26,12 @@ export default function Sidebar() {
             >
                 <FiUsers size={28}/> Користувачі
             </Link>
-            <button
-                className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl">
+            <Link
+                to={"/candidates"}
+                className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl"
+            >
                 <FiUsers size={28}/> Кандидати
-            </button>
+            </Link>
             <Link
                 to={"/clients"}
                 className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl"

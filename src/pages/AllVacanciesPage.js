@@ -30,6 +30,13 @@ export default function AllVacanciesPage() {
 
     const totalPages = Math.ceil(vacancies.length / vacanciesPerPage);
 
+    const statusMap = {
+        "IN_PROGRESS": {label: "В роботі", color: "bg-blue-100 text-green-800"},
+        "CLOSED_WON": {label: "Закрита: виграна", color: "bg-green-100 text-blue-800"},
+        "CLOSED_LOST": {label: "Закрита: програна", color: "bg-red-100 text-red-800"},
+        "CLOSED_BY_CLIENT": {label: "Закрита клієнтом", color: "bg-orange-100 text-yellow-800"},
+    };
+
     return (
         <div className="w-full max-w-6xl mx-auto p-10 min-h-screen text-xl">
             <div className="flex justify-between items-center mb-10">
@@ -58,7 +65,7 @@ export default function AllVacanciesPage() {
                         <td className="py-3">
                             <button
                                 className="text-blue-700 underline hover:text-blue-900"
-                                onClick={() => navigate(`/vacancy/${vacancy.id}`)}
+                                onClick={() => navigate(`/vacancies/${vacancy.id}`)}
                             >
                                 {vacancy.name}
                             </button>
@@ -66,7 +73,13 @@ export default function AllVacanciesPage() {
                         <td className="py-3">
                             {vacancy.users?.map(u => u.firstName).join(", ") || "—"}
                         </td>
-                        <td className="py-3">{vacancy.status}</td>
+                        <td className="py-3">
+    <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+        statusMap[vacancy.status]?.color || "bg-gray-100 text-gray-800"
+    }`}>
+        {statusMap[vacancy.status]?.label || vacancy.status}
+    </span>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

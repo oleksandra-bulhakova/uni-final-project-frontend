@@ -1,5 +1,4 @@
 import React from "react";
-import { FiEdit } from "react-icons/fi";
 
 function UserDetails({ firstName, lastName, userRole, userStatus }) {
     return (
@@ -14,7 +13,6 @@ function UserDetails({ firstName, lastName, userRole, userStatus }) {
                     className="block w-full bg-gray-100 border border-gray-300 rounded px-3 py-2"
                     style={{minWidth: "100%"}}
                 />
-                <FiEdit className="absolute right-3 top-9 text-gray-500 cursor-pointer"/>
             </div>
 
             <div className="relative">
@@ -26,7 +24,6 @@ function UserDetails({ firstName, lastName, userRole, userStatus }) {
                     className="block w-full bg-gray-100 border border-gray-300 rounded px-3 py-2"
                     style={{minWidth: "100%"}}
                 />
-                <FiEdit className="absolute right-3 top-9 text-gray-500 cursor-pointer"/>
             </div>
 
             <div>

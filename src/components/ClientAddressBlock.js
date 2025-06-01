@@ -1,8 +1,9 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import AddAddressModal from "./AddAddressModal";
 
-function AddressBlock({address, ownerId, ownableType, onAddressAdded}) {
+function ClientAddressBlock({ address, clientId, onAddressAdded }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     if (!address) {
         return (
             <>
@@ -15,8 +16,8 @@ function AddressBlock({address, ownerId, ownableType, onAddressAdded}) {
 
                 {isModalOpen && (
                     <AddAddressModal
-                        ownerId={ownerId}
-                        ownableType={ownableType}
+                        ownerId={clientId}
+                        ownableType="CLIENT"
                         onClose={() => setIsModalOpen(false)}
                         onSuccess={onAddressAdded}
                     />
@@ -25,7 +26,7 @@ function AddressBlock({address, ownerId, ownableType, onAddressAdded}) {
         );
     }
 
-    const {country, city, street, building, apartment} = address;
+    const { country, city, street, building, apartment } = address;
 
     return (
         <div>
@@ -40,4 +41,4 @@ function AddressBlock({address, ownerId, ownableType, onAddressAdded}) {
     );
 }
 
-export default AddressBlock;
+export default ClientAddressBlock;
