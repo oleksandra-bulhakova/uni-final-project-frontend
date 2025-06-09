@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import api from "../api/axiosInstance";
 import ClientAddressBlock from "../components/ClientAddressBlock";
+import ContactList from "../components/ContactList";
+import { FiX } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 const ClientDetailsPage = () => {
     const { clientId } = useParams();
+    const navigate = useNavigate();
     const [client, setClient] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -53,6 +57,44 @@ const ClientDetailsPage = () => {
         return <div className="text-center mt-10 text-red-600">Клієнта не знайдено.</div>;
     }
 
+    const handleDelete = () => {
+        toast.custom((t) => (
+            <div
+                className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 text-center w-full max-w-md mx-auto
+                        transition-all ${t.visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                style={{ marginTop: "180px" }}
+            >
+                <p className="mb-4 text-gray-800 font-medium">
+                    Ви впевнені, що хочете видалити клієнта?
+                </p>
+                <div className="flex justify-center gap-4">
+                    <button
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                                await api.delete(`/clients/${clientId}`);
+                                toast.success("Клієнта видалено", { duration: 1000 });
+                                navigate("/clients");
+                            } catch (err) {
+                                console.error("Помилка при видаленні клієнта", err);
+                                toast.error("Не вдалося видалити клієнта");
+                            }
+                        }}
+                        className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                        Так
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-4 py-1 border rounded hover:bg-gray-100"
+                    >
+                        Ні
+                    </button>
+                </div>
+            </div>
+        ), { duration: Infinity });
+    };
+
     const totalVacancies = client.vacancies?.length || 0;
     const totalPages = Math.ceil(totalVacancies / vacanciesPerPage);
     const indexOfLast = currentPage * vacanciesPerPage;
@@ -61,34 +103,32 @@ const ClientDetailsPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-            <h1 className="text-2xl font-bold mb-4">{client.name}</h1>
-
-            <p className="text-gray-600 mb-2">
-                <strong>Дата реєстрації:</strong> {client.registrationDate}
-            </p>
-
-            <ClientAddressBlock address={client.address} clientId={clientId} onAddressAdded={fetchClient}/>
-
-            <div className="mb-4">
-                <h2 className="font-semibold">Контакти:</h2>
-                {client.contacts?.length ? (
-                    <ul className="list-disc list-inside text-gray-700">
-                        {client.contacts.map(contact => (
-                            <li key={contact.id}>
-                                <span className="text-gray-800 font-semibold">
-                                    {typeLabels[contact.type] || contact.type}:
-                                </span>{" "}
-                                <span className="text-gray-500">{contact.contact}</span>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>—</p>
-                )}
+            <div className="flex items-center gap-6 mb-4">
+                <h1 className="text-2xl font-bold">{client.name}</h1>
+                <FiX
+                    onClick={handleDelete}
+                    className="text-gray-500 hover:text-red-600 cursor-pointer text-2xl"
+                    title="Видалити клієнта"
+                />
             </div>
 
-            <div className="mb-4">
-                <h2 className="font-semibold">Вакансії:</h2>
+            <p className="text-gray-600 mb-2 text-xl">
+                <strong>Дата реєстрації:</strong> {client.registrationDate}
+            </p>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <ClientAddressBlock address={client.address} clientId={clientId} onAddressAdded={fetchClient}/>
+            </div>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <ContactList
+                    contacts={client.contacts}
+                    ownerId={client.id}
+                    ownableType="CLIENT"
+                    onContactAdded={fetchClient}
+                />
+            </div>
+
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <h2 className="font-semibold text-xl text-gray-700">Вакансії:</h2>
                 {currentVacancies.length ? (
                     <>
                         <ul className="list-disc list-inside text-gray-700 mb-2">
@@ -104,7 +144,7 @@ const ClientDetailsPage = () => {
                             ))}
                         </ul>
 
-                        <div className="flex justify-center gap-2 text-sm text-gray-700">
+                        <div className="flex justify-center gap-2 text-gray-700">
                             <button
                                 disabled={currentPage === 1}
                                 onClick={() => setCurrentPage(prev => prev - 1)}

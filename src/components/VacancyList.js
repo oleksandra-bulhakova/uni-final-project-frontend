@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 function VacancyList({vacancies}) {
     const [currentPage, setCurrentPage] = useState(1);
-    const vacanciesPerPage = 5;
+    const vacanciesPerPage = 10;
 
     const totalPages = Math.ceil(vacancies.length / vacanciesPerPage);
     const startIndex = (currentPage - 1) * vacanciesPerPage;

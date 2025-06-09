@@ -7,6 +7,14 @@ const VacancyDetailsPage = () => {
     const [vacancy, setVacancy] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const appointmentTypeOptions = [
+        { value: "PRESCREEN", label: "Prescreen" },
+        { value: "INTERVIEW", label: "Interview" },
+        { value: "ENGLISH_CHECK", label: "English Check" },
+        { value: "OFFER", label: "Offer" },
+        { value: "HIRING", label: "Hiring" },
+    ];
+
     useEffect(() => {
         api.get(`/vacancies/${vacancyId}`)
             .then(response => {
@@ -41,21 +49,21 @@ const VacancyDetailsPage = () => {
         <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
             <h1 className="text-2xl font-bold mb-4">{vacancy.name}</h1>
 
-            <p className="text-gray-600 mb-2"><strong>Дата створення:</strong> {vacancy.creationDate}</p>
-            <p className="text-gray-600 mb-4"><strong>Статус:</strong>
+            <p className="text-gray-600 mb-2 text-xl"><strong>Дата створення:</strong> {vacancy.creationDate}</p>
+            <p className="text-gray-600 mb-4 text-xl"><strong>Статус:</strong>
                 <span
-                    className={`ml-2 inline-block px-3 py-1 rounded-full text-sm font-semibold ${statusInfo.color}`}>
+                    className={`ml-2 inline-block px-3 py-1 rounded-full font-semibold ${statusInfo.color}`}>
             {statusInfo.label}
         </span>
             </p>
 
-            <div className="mb-4">
-                <h2 className="font-semibold">Опис:</h2>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <h2 className="font-semibold text-xl text-gray-700">Опис:</h2>
                 <p className="text-gray-700">{vacancy.description || '—'}</p>
             </div>
 
-            <div className="mb-4">
-                <h2 className="font-semibold">Технології:</h2>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <h2 className="font-semibold text-xl text-gray-700">Технології:</h2>
                 <ul className="list-disc list-inside text-gray-700">
                     {vacancy.technologies?.length ? (
                         vacancy.technologies.map((tech) => (
@@ -67,13 +75,13 @@ const VacancyDetailsPage = () => {
                 </ul>
             </div>
 
-            <div className="mb-4">
-                <h2 className="font-semibold">Клієнт:</h2>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <h2 className="font-semibold text-xl text-gray-700">Клієнт:</h2>
                 <p className="text-gray-700">{vacancy.client?.name || '—'}</p>
             </div>
 
-            <div className="mb-4">
-                <h2 className="font-semibold">Рекрутери:</h2>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                <h2 className="font-semibold text-xl text-gray-700">Рекрутери:</h2>
                 <div className="flex flex-wrap gap-3">
                     {vacancy.users?.length ? (
                         vacancy.users.map(user => (
@@ -94,13 +102,15 @@ const VacancyDetailsPage = () => {
                 </div>
             </div>
 
-            <div>
-                <h2 className="font-semibold">Статистика кандидатів:</h2>
+            <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
+                <h2 className="font-semibold text-xl text-gray-700">Статистика:</h2>
                 <ul className="list-disc list-inside text-gray-700">
                     {vacancy.candidateStatistics?.length ? (
                         vacancy.candidateStatistics.map((item, index) => (
                             <li key={index}>
-                                {item.name}: {item.count}
+                                {
+                                    appointmentTypeOptions.find(opt => opt.value === item.type)?.label || item.type
+                                }: {item.count}
                             </li>
                         ))
                     ) : (

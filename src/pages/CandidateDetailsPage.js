@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 import api from "../api/axiosInstance";
 import ContactList from "../components/ContactList";
 import AddressBlock from "../components/AddressBlock";
 import Select from "react-select";
+import EditCandidateModal from "../components/EditCandidateModal";
+import {FiEdit} from "react-icons/fi";
+import AddCandidateToVacancyModal from "../components/AddCandidateToVacancyModal";
+import VacancyList from "../components/VacancyList";
+import AppointmentBlock from "../components/AppointmentBlock";
 
 export default function CandidateDetailsPage() {
-    const { candidateId } = useParams();
+    const {candidateId} = useParams();
     const [candidate, setCandidate] = useState(null);
     const [error, setError] = useState(null);
     const [resumes, setResumes] = useState([]);
@@ -14,12 +19,15 @@ export default function CandidateDetailsPage() {
     const [currentCommentPage, setCurrentCommentPage] = useState(1);
     const [allTechnologies, setAllTechnologies] = useState([]);
     const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const commentsPerPage = 5;
     const indexOfLastComment = currentCommentPage * commentsPerPage;
     const indexOfFirstComment = indexOfLastComment - commentsPerPage;
     const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
     const totalCommentPages = Math.ceil(comments.length / commentsPerPage);
+    const [isAddToVacancyModalOpen, setIsAddToVacancyModalOpen] = useState(false);
+    const [newComment, setNewComment] = useState("");
 
     const loadCandidate = async () => {
         try {
@@ -59,7 +67,7 @@ export default function CandidateDetailsPage() {
 
         try {
             const response = await api.post(`/attachments/${candidateId}`, formData, {
-                headers: { "Content-Type": "multipart/form-data" }
+                headers: {"Content-Type": "multipart/form-data"}
             });
             setResumes((prev) => [...prev, response.data]);
         } catch (err) {
@@ -81,37 +89,75 @@ export default function CandidateDetailsPage() {
 
     return (
         <div className="w-full max-w-6xl mx-auto min-h-screen p-10">
-            <h2 className="text-3xl font-bold text-center mb-10">Інформація про кандидата</h2>
+            <h2 className="text-3xl font-bold text-center mb-10 flex items-center justify-center gap-6">
+                Інформація про кандидата
+                <FiEdit
+                    className="text-gray-500 cursor-pointer text-xl hover:text-black"
+                    onClick={() => setIsEditModalOpen(true)}
+                />
+            </h2>
 
             <div className="flex flex-col lg:flex-row gap-10">
                 <div className="flex-1 space-y-6 text-xl">
-                    <div className="space-y-2">
+                    <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
                         <p><strong>Ім’я:</strong> {candidate.firstName}</p>
                         <p><strong>Прізвище:</strong> {candidate.lastName}</p>
                         <p><strong>Джерело:</strong> {candidate.source}</p>
                         <p><strong>Дата реєстрації:</strong> {candidate.registrationDate}</p>
                     </div>
-
-                    <ContactList contacts={candidate.contacts} />
-
-                    <AddressBlock
-                        address={candidate.address}
-                        userId={candidate.id}
-                        ownableType="CANDIDATE"
-                        onAddressAdded={loadCandidate}
+                    <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
+                        <AppointmentBlock candidateId={candidate.id}/>
+                    </div>
+                    <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
+                        <ContactList
+                            contacts={candidate.contacts}
+                            ownerId={candidate.id}
+                            ownableType="CANDIDATE"
+                            onContactAdded={loadCandidate}
+                        />
+                    </div>
+                    <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
+                        <AddressBlock
+                            address={candidate.address}
+                            ownerId={candidate.id}
+                            ownableType="CANDIDATE"
+                            onAddressAdded={loadCandidate}
+                        />
+                    </div>
+                    <VacancyList
+                        vacancies={candidate.vacancies}
                     />
+                    <button
+                        onClick={() => setIsAddToVacancyModalOpen(true)}
+                        className="px-4 py-2 bg-[#FE7C7C] hover:bg-[#58618E] text-white rounded text-xl"
+                    >
+                        Додати у вакансію
+                    </button>
+                    {isAddToVacancyModalOpen && (
+                        <AddCandidateToVacancyModal
+                            candidateId={candidate.id}
+                            onClose={() => setIsAddToVacancyModalOpen(false)}
+                            onSuccess={loadCandidate}
+                        />
+                    )}
                 </div>
-
+                {isEditModalOpen && (
+                    <EditCandidateModal
+                        candidate={candidate}
+                        onClose={() => setIsEditModalOpen(false)}
+                        onSuccess={loadCandidate}
+                    />
+                )}
                 <div className="flex-1 space-y-6">
-                    <div>
+                    <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
                         <label className="block text-gray-700 font-medium mb-1 text-xl">Технології</label>
                         <Select
                             isMulti
                             placeholder="Оберіть технології"
-                            value={selectedTechnologies.map(tech => ({ value: tech.id, label: tech.name }))}
-                            options={allTechnologies.map(tech => ({ value: tech.id, label: tech.name }))}
+                            value={selectedTechnologies.map(tech => ({value: tech.id, label: tech.name}))}
+                            options={allTechnologies.map(tech => ({value: tech.id, label: tech.name}))}
                             onChange={(selected) => {
-                                const mapped = selected.map(s => ({ id: s.value, name: s.label }));
+                                const mapped = selected.map(s => ({id: s.value, name: s.label}));
                                 setSelectedTechnologies(mapped);
                             }}
                             className="text-black mb-3 text-xl"
@@ -126,7 +172,8 @@ export default function CandidateDetailsPage() {
 
                     <div className="bg-gray-50 border rounded-lg p-4 shadow-sm space-y-3 text-xl">
                         <h3 className="text-xl font-semibold">Резюме</h3>
-                        <label className="flex items-center justify-between border-2 border-dashed p-3 rounded cursor-pointer hover:bg-gray-100 text-base">
+                        <label
+                            className="flex items-center justify-between border-2 border-dashed p-3 rounded cursor-pointer hover:bg-gray-100 text-base">
                             📎 Прикріпити файл
                             <input
                                 type="file"
@@ -155,20 +202,51 @@ export default function CandidateDetailsPage() {
 
                     <div>
                         <h3 className="text-xl font-semibold mb-4">Коментарі</h3>
+                        <div className="mb-6">
+    <textarea
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
+        placeholder="Напишіть коментар..."
+        rows={3}
+        className="w-full border px-3 py-2 rounded resize-none mb-2 text-lg"
+    />
+                            <button
+                                onClick={async () => {
+                                    if (!newComment.trim()) {
+                                        alert("Будь ласка, введіть коментар");
+                                        return;
+                                    }
+                                    try {
+                                        await api.put(`/candidates/comment/${candidateId}`, {
+                                            description: newComment
+                                        });
+                                        setNewComment("");
+                                        await loadCandidate();
+                                    } catch (err) {
+                                        console.error("Не вдалося додати коментар:", err);
+                                    }
+                                }}
+                                className="px-4 py-2 bg-[#FE7C7C] hover:bg-[#58618E] text-white rounded text-xl"
+                            >
+                                Додати коментар
+                            </button>
+                        </div>
                         {currentComments.map(comment => (
                             <div key={comment.id} className="border p-3 rounded mb-3 shadow-sm">
                                 <div className="flex items-center gap-3 mb-1">
                                     {comment.author.imagePath && (
-                                        <img src={comment.author.imagePath} alt="avatar" className="w-8 h-8 rounded-full" />
+                                        <img src={comment.author.imagePath} alt="avatar"
+                                             className="w-8 h-8 rounded-full"/>
                                     )}
-                                    <span className="font-semibold">{comment.author.firstName} {comment.author.lastName}</span>
+                                    <span
+                                        className="font-semibold">{comment.author.firstName} {comment.author.lastName}</span>
                                     <span className="text-gray-500 text-sm ml-auto">{comment.date}</span>
                                 </div>
                                 <p className="text-gray-800">{comment.description}</p>
                             </div>
                         ))}
                         <div className="flex justify-center gap-2 mt-4">
-                            {Array.from({ length: totalCommentPages }, (_, i) => (
+                            {Array.from({length: totalCommentPages}, (_, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setCurrentCommentPage(i + 1)}

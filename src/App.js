@@ -20,6 +20,7 @@ import ClientDetailsPage from "./pages/ClientDetailsPage";
 import CreateCandidatePage from "./pages/CreateCandidatePage";
 import AllCandidatesPage from "./pages/AllCandidatesPage";
 import CandidateDetailsPage from "./pages/CandidateDetailsPage";
+import { Toaster as HotToaster } from 'react-hot-toast';
 
 export default function App() {
     function HomeRoute() {
@@ -32,7 +33,7 @@ export default function App() {
                 <Header/>
             </header>
 
-            <div className="flex">
+            <div className="flex h-full">
                 <aside className="w-64 p-4 min-h-screen">
                     <Sidebar/>
                 </aside>
@@ -62,6 +63,20 @@ export default function App() {
                 position="top-center"
                 autoClose={1000}
                 toastStyle={{marginTop: '80px'}}
+            />
+            <HotToaster
+                position="top-center"
+                toastOptions={{
+                    style: {
+                        marginTop: "180px",
+                        background: "#ffffff",
+                        color: "#333",
+                        border: "1px solid #ccc",
+                        borderRadius: "8px",
+                        boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+                        padding: "16px"
+                    }
+                }}
             />
         </div>
     );

@@ -12,7 +12,7 @@ export default function Sidebar() {
     if (!isAuthenticated) return null;
 
     return (
-        <aside className="bg-[#ecebeb] h-screen w-80 p-6 flex flex-col gap-6 shadow-md">
+        <aside className="bg-[#ecebeb] h-full w-80 p-6 flex flex-col gap-6 shadow-md">
 
             <Link
                 to={`/user/${userId}`}
