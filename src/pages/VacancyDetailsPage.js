@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import api from "../api/axiosInstance";
+import EditVacancyStatusModal from "../components/EditVacancyStatusModal";
+import EditVacancyUsersModal from "../components/EditVacancyUsersModal";
+import EditVacancyTechnologiesBlock from "../components/EditVacancyTechnologiesBlock";
+import EditVacancyModal from "../components/EditVacancyModal";
 
 const VacancyDetailsPage = () => {
     const {vacancyId} = useParams();
@@ -14,6 +18,10 @@ const VacancyDetailsPage = () => {
         { value: "OFFER", label: "Offer" },
         { value: "HIRING", label: "Hiring" },
     ];
+
+    const handleStatusChange = (newStatus) => {
+        setVacancy(prev => ({ ...prev, status: newStatus }));
+    };
 
     useEffect(() => {
         api.get(`/vacancies/${vacancyId}`)
@@ -47,7 +55,17 @@ const VacancyDetailsPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
-            <h1 className="text-2xl font-bold mb-4">{vacancy.name}</h1>
+            <h1 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                {vacancy.name}
+                <EditVacancyModal
+                    vacancyId={vacancy.id}
+                    currentName={vacancy.name}
+                    currentDescription={vacancy.description}
+                    onSuccess={() => {
+                        api.get(`/vacancies/${vacancyId}`).then(res => setVacancy(res.data));
+                    }}
+                />
+            </h1>
 
             <p className="text-gray-600 mb-2 text-xl"><strong>Дата створення:</strong> {vacancy.creationDate}</p>
             <p className="text-gray-600 mb-4 text-xl"><strong>Статус:</strong>
@@ -55,6 +73,11 @@ const VacancyDetailsPage = () => {
                     className={`ml-2 inline-block px-3 py-1 rounded-full font-semibold ${statusInfo.color}`}>
             {statusInfo.label}
         </span>
+                <EditVacancyStatusModal
+                    vacancyId={vacancy.id}
+                    currentStatus={vacancy.status}
+                    onStatusChange={handleStatusChange}
+                />
             </p>
 
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
@@ -62,18 +85,13 @@ const VacancyDetailsPage = () => {
                 <p className="text-gray-700">{vacancy.description || '—'}</p>
             </div>
 
-            <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
-                <h2 className="font-semibold text-xl text-gray-700">Технології:</h2>
-                <ul className="list-disc list-inside text-gray-700">
-                    {vacancy.technologies?.length ? (
-                        vacancy.technologies.map((tech) => (
-                            <li key={tech.id}>{tech.name}</li>
-                        ))
-                    ) : (
-                        <li>—</li>
-                    )}
-                </ul>
-            </div>
+            <EditVacancyTechnologiesBlock
+                vacancyId={vacancy.id}
+                initialTechnologies={vacancy.technologies}
+                onUpdated={() => {
+                    api.get(`/vacancies/${vacancyId}`).then(res => setVacancy(res.data));
+                }}
+            />
 
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
                 <h2 className="font-semibold text-xl text-gray-700">Клієнт:</h2>
@@ -81,7 +99,8 @@ const VacancyDetailsPage = () => {
             </div>
 
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
-                <h2 className="font-semibold text-xl text-gray-700">Рекрутери:</h2>
+                <h2 className="font-semibold text-xl text-gray-700">Рекрутери:
+                    <EditVacancyUsersModal vacancyId={vacancy.id} onSuccess={() => window.location.reload()}/></h2>
                 <div className="flex flex-wrap gap-3">
                     {vacancy.users?.length ? (
                         vacancy.users.map(user => (
