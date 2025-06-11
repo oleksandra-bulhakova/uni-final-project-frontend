@@ -5,6 +5,7 @@ import EditVacancyStatusModal from "../components/EditVacancyStatusModal";
 import EditVacancyUsersModal from "../components/EditVacancyUsersModal";
 import EditVacancyTechnologiesBlock from "../components/EditVacancyTechnologiesBlock";
 import EditVacancyModal from "../components/EditVacancyModal";
+import EditVacancyClientModal from "../components/EditVacancyClientModal";
 
 const VacancyDetailsPage = () => {
     const {vacancyId} = useParams();
@@ -94,7 +95,16 @@ const VacancyDetailsPage = () => {
             />
 
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
-                <h2 className="font-semibold text-xl text-gray-700">Клієнт:</h2>
+                <h2 className="font-semibold text-xl text-gray-700 flex items-center gap-2">
+                    Замовник:
+                    <EditVacancyClientModal
+                        vacancyId={vacancy.id}
+                        currentClient={vacancy.client}
+                        onSuccess={() => {
+                            api.get(`/vacancies/${vacancyId}`).then(res => setVacancy(res.data));
+                        }}
+                    />
+                </h2>
                 <p className="text-gray-700">{vacancy.client?.name || '—'}</p>
             </div>
 

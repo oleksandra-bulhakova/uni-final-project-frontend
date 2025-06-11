@@ -9,6 +9,7 @@ import {FiEdit} from "react-icons/fi";
 import AddCandidateToVacancyModal from "../components/AddCandidateToVacancyModal";
 import VacancyList from "../components/VacancyList";
 import AppointmentBlock from "../components/AppointmentBlock";
+import CommentActions from "../components/CommentActions";
 
 export default function CandidateDetailsPage() {
     const {candidateId} = useParams();
@@ -243,6 +244,7 @@ export default function CandidateDetailsPage() {
                                     <span className="text-gray-500 text-sm ml-auto">{comment.date}</span>
                                 </div>
                                 <p className="text-gray-800">{comment.description}</p>
+                                <CommentActions comment={comment} onUpdated={loadCandidate} />
                             </div>
                         ))}
                         <div className="flex justify-center gap-2 mt-4">
