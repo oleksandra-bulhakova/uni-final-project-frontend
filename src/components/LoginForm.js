@@ -29,7 +29,7 @@ export default function LoginForm({onSuccess, openResetModal}) {
             if (onSuccess) {
                 onSuccess();
             }
-            navigate('/main');
+            navigate('/candidates');
             toast.success('Вхід успішний');
         } catch (error) {
             toast.error('Невірний email або пароль 😬');

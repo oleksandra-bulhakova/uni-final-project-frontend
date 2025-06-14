@@ -21,6 +21,7 @@ import CreateCandidatePage from "./pages/CreateCandidatePage";
 import AllCandidatesPage from "./pages/AllCandidatesPage";
 import CandidateDetailsPage from "./pages/CandidateDetailsPage";
 import { Toaster as HotToaster } from 'react-hot-toast';
+import UserActivityReportPage from "./pages/UserActivityReportPage";
 
 export default function App() {
     function HomeRoute() {
@@ -56,6 +57,7 @@ export default function App() {
                         <Route path="/candidates" element={<AllCandidatesPage/>}/>
                         <Route path="/create-candidate" element={<CreateCandidatePage/>}/>
                         <Route path="/candidates/:candidateId" element={<CandidateDetailsPage/>}/>
+                        <Route path="/report" element={<UserActivityReportPage/>}/>
                     </Routes>
                 </main>
             </div>

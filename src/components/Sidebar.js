@@ -38,10 +38,12 @@ export default function Sidebar() {
             >
                 <FiBriefcase size={28}/> Замовники
             </Link>
-            <button
-                className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl">
-                <FiFileText size={28}/> Звіти
-            </button>
+            <Link
+                to={"/report"}
+                className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl"
+            >
+                <FiFileText size={28}/> Звіт
+            </Link>
             <Link
                 to={"/vacancies"}
                 className="flex items-center gap-3 bg-[#fcb03d] hover:bg-[#e59e30] text-white font-bold text-xl py-4 px-6 rounded-2xl"

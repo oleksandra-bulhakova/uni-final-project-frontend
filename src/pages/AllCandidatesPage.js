@@ -2,23 +2,71 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosInstance";
 import { getUserId } from "../utils/auth";
+import Select from "react-select";
 
 export default function AllCandidatesPage() {
     const navigate = useNavigate();
     const [candidates, setCandidates] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [candidatesPerPage] = useState(5);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [technologies, setTechnologies] = useState([]);
+    const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+
+    useEffect(() => {
+        const fetchTechnologies = async () => {
+            try {
+                const response = await api.get("/technologies");
+                setTechnologies(response.data);
+            } catch (err) {
+                console.error("Не вдалося завантажити технології", err);
+            }
+        };
+        fetchTechnologies();
+    }, []);
+
+    useEffect(() => {
+        const fetchFilteredCandidates = async () => {
+            const userId = getUserId();
+
+            if (selectedTechnologies.length > 0) {
+                try {
+                    const response = await api.post("/candidates/search/technologies",
+                        selectedTechnologies.map(t => t.value), {
+                            headers: { "Current-User-Id": userId }
+                        });
+                    setCandidates(response.data);
+                } catch (err) {
+                    console.error("Помилка при фільтрації кандидатів:", err);
+                }
+            } else {
+                const response = await api.get("/candidates", {
+                    headers: { "Current-User-Id": userId }
+                });
+                setCandidates(response.data);
+            }
+        };
+
+        fetchFilteredCandidates();
+    }, [selectedTechnologies]);
 
     useEffect(() => {
         const fetchCandidates = async () => {
             const userId = getUserId();
-            const response = await api.get("/candidates", {
-                headers: { "Current-User-Id": userId }
-            });
-            setCandidates(response.data);
+            if (searchTerm.trim() === "") {
+                const response = await api.get("/candidates", {
+                    headers: { "Current-User-Id": userId }
+                });
+                setCandidates(response.data);
+            } else {
+                const response = await api.get(`/candidates/search?name=${searchTerm}`, {
+                    headers: { "Current-User-Id": userId }
+                });
+                setCandidates(response.data);
+            }
         };
         fetchCandidates();
-    }, []);
+    }, [searchTerm]);
 
     const indexOfLast = currentPage * candidatesPerPage;
     const indexOfFirst = indexOfLast - candidatesPerPage;
@@ -40,6 +88,28 @@ export default function AllCandidatesPage() {
                 </button>
             </div>
 
+            <div className="flex items-end justify-between mb-6 gap-6">
+                <div className="w-1/2">
+                    <label className="block mb-1 text-gray-600">Пошук</label>
+                    <input
+                        type="text"
+                        placeholder="Пошук..."
+                        className="w-full border px-4 py-2 rounded text-lg"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <div className="w-1/2">
+                    <label className="block mb-1 text-gray-600">Фільтрувати за напрямком</label>
+                    <Select
+                        isMulti
+                        options={technologies.map(t => ({value: t.id, label: t.name}))}
+                        value={selectedTechnologies}
+                        onChange={setSelectedTechnologies}
+                        placeholder="Оберіть технологію"
+                    />
+                </div>
+            </div>
             <table className="w-full text-left border-collapse mb-6 text-xl">
                 <thead>
                 <tr className="text-gray-500 border-b">

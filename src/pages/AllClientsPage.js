@@ -41,17 +41,6 @@ export default function AllClientsPage() {
                     Додати замовника
                 </button>
             </div>
-            <div className="flex items-center gap-4 mb-6 text-xl">
-                <input
-                    type="text"
-                    placeholder="🔍 Пошук"
-                    className="border px-4 py-2 rounded w-1/2"
-                    disabled
-                />
-                <select className="border px-3 py-2 rounded text-xl text-gray-700" disabled>
-                    <option>Обрати критерій</option>
-                </select>
-            </div>
 
             <table className="w-full text-left border-collapse mb-6">
                 <thead>
