@@ -9,26 +9,51 @@ export default function AllUsersPage() {
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPerPage] = useState(5);
+    const [filterValue, setFilterValue] = useState("");
+
+    const fetchUsers = async (filter) => {
+        const userId = getUserId();
+        try {
+            let response;
+            if (filter === "") {
+                response = await api.get("/users", {
+                    headers: {"Current-User-Id": userId}
+                });
+            } else {
+                response = await api.get("/users/status", {
+                    headers: {"Current-User-Id": userId},
+                    params: {active: filter === "true"}
+                });
+            }
+            setUsers(response.data);
+            setCurrentPage(1);
+        } catch (err) {
+            console.error("Помилка при завантаженні користувачів", err);
+        }
+    };
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            const userId = getUserId();
-            const response = await api.get("/users", {
-                headers: {"Current-User-Id": userId}
-            });
-            setUsers(response.data);
-        };
-        fetchUsers();
-    }, []);
+        fetchUsers(filterValue);
+    }, [filterValue]);
 
     const indexOfLast = currentPage * usersPerPage;
     const indexOfFirst = indexOfLast - usersPerPage;
     const currentUsers = users.slice(indexOfFirst, indexOfLast);
-
     const totalPages = Math.ceil(users.length / usersPerPage);
 
     return (
         <div className="w-full max-w-6xl mx-auto p-10 min-h-screen text-xl">
+            <div className="flex justify-between items-center mb-10">
+                <select
+                    value={filterValue} onChange={(e) => setFilterValue(e.target.value)}
+                    className="text-xl border px-4 py-2 rounded bg-gray-200 text-gray-700"
+                >
+                    <option value="">Всі</option>
+                    <option value="true">Активні</option>
+                    <option value="false">Неактивні</option>
+
+                </select>
+            </div>
             <div className="flex justify-center mb-10">
                 <h2 className="text-3xl font-bold">Користувачі</h2>
             </div>

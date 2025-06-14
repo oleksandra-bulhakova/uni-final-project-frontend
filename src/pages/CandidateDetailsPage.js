@@ -5,11 +5,12 @@ import ContactList from "../components/ContactList";
 import AddressBlock from "../components/AddressBlock";
 import Select from "react-select";
 import EditCandidateModal from "../components/EditCandidateModal";
-import {FiEdit} from "react-icons/fi";
+import {FiEdit, FiTrash2} from "react-icons/fi";
 import AddCandidateToVacancyModal from "../components/AddCandidateToVacancyModal";
 import VacancyList from "../components/VacancyList";
 import AppointmentBlock from "../components/AppointmentBlock";
 import CommentActions from "../components/CommentActions";
+import { toast } from "react-hot-toast";
 
 export default function CandidateDetailsPage() {
     const {candidateId} = useParams();
@@ -61,6 +62,7 @@ export default function CandidateDetailsPage() {
 
     const handleFileUpload = async (e) => {
         const file = e.target.files[0];
+        e.target.value = "";
         if (!file) return;
 
         const formData = new FormData();
@@ -107,7 +109,10 @@ export default function CandidateDetailsPage() {
                         <p><strong>Дата реєстрації:</strong> {candidate.registrationDate}</p>
                     </div>
                     <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
-                        <AppointmentBlock candidateId={candidate.id}/>
+                        <AppointmentBlock
+                            candidateId={candidate.id}
+                            onAppointmentChange={loadCandidate}
+                        />
                     </div>
                     <div className="bg-gray-200 rounded-xl p-4 shadow-sm">
                         <ContactList
@@ -126,7 +131,9 @@ export default function CandidateDetailsPage() {
                         />
                     </div>
                     <VacancyList
+                        candidateId={candidate.id}
                         vacancies={candidate.vacancies}
+                        onVacancyRemoved={loadCandidate}
                     />
                     <button
                         onClick={() => setIsAddToVacancyModalOpen(true)}
@@ -186,15 +193,58 @@ export default function CandidateDetailsPage() {
                         {resumes.length > 0 && (
                             <ul className="space-y-2">
                                 {resumes.map((resume) => (
-                                    <li key={resume.id}>
+                                    <li key={resume.id} className="flex items-center justify-between">
                                         <a
                                             href={resume.attachmentPath}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-blue-700 underline text-sm block"
                                         >
-                                            📄 {resume.attachmentPath.split("_").slice(1).join("_")}
+                                            📄 {decodeURIComponent(resume.attachmentPath.split("_").slice(1).join("_"))}
                                         </a>
+                                        <button
+                                            onClick={() =>
+                                                toast.custom((t) => (
+                                                    <div
+                                                        className={`bg-white p-4 rounded-lg shadow-lg border border-gray-200 text-center w-full max-w-md mx-auto
+                    transition-all ${t.visible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                                                        style={{marginTop: "180px"}}
+                                                    >
+                                                        <p className="mb-4 text-gray-800 font-medium">
+                                                            Ви впевнені, що хочете видалити це резюме?
+                                                        </p>
+                                                        <div className="flex justify-center gap-4">
+                                                            <button
+                                                                onClick={async () => {
+                                                                    toast.dismiss(t.id);
+                                                                    try {
+                                                                        await api.delete(`/attachments/${resume.id}`);
+                                                                        toast.success("Резюме видалено", {duration: 1000});
+                                                                        setResumes((prev) => prev.filter(r => r.id !== resume.id));
+                                                                    } catch (err) {
+                                                                        console.error("Не вдалося видалити файл:", err);
+                                                                        toast.error("Помилка при видаленні резюме");
+                                                                    }
+                                                                }}
+                                                                className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                                            >
+                                                                Так
+                                                            </button>
+                                                            <button
+                                                                onClick={() => toast.dismiss(t.id)}
+                                                                className="px-4 py-1 border rounded hover:bg-gray-100"
+                                                            >
+                                                                Ні
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ), {duration: Infinity})
+                                            }
+                                            className="text-red-500 hover:text-red-700 text-xl ml-4"
+                                            title="Видалити файл"
+                                        >
+                                            <FiTrash2/>
+                                        </button>
                                     </li>
                                 ))}
                             </ul>
@@ -234,7 +284,7 @@ export default function CandidateDetailsPage() {
                         </div>
                         {currentComments.map(comment => (
                             <div key={comment.id} className="border p-3 rounded mb-3 shadow-sm">
-                                <div className="flex items-center gap-3 mb-1">
+                            <div className="flex items-center gap-3 mb-1">
                                     {comment.author.imagePath && (
                                         <img src={comment.author.imagePath} alt="avatar"
                                              className="w-8 h-8 rounded-full"/>

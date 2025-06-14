@@ -1,7 +1,9 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
+import api from "../api/axiosInstance";
+import {FiTrash2} from "react-icons/fi";
 
-function VacancyList({vacancies}) {
+function VacancyList({vacancies, candidateId, onVacancyRemoved}) {
     const [currentPage, setCurrentPage] = useState(1);
     const vacanciesPerPage = 10;
 
@@ -15,17 +17,35 @@ function VacancyList({vacancies}) {
         }
     };
 
+    const handleRemove = async (vacancyId) => {
+        try {
+            await api.delete(`/candidates/${candidateId}/${vacancyId}`);
+            onVacancyRemoved();
+        } catch (err) {
+            console.error("Не вдалося видалити кандидата з вакансії:", err);
+        }
+    };
+
     return (
         <div className="space-y-3">
             <h2 className="text-xl text-gray-700 font-medium">Вакансії</h2>
             {currentVacancies.map((vacancy) => (
-                <div key={vacancy.id} className="border p-3 rounded-md shadow-sm text-xl">
+                <div key={vacancy.id} className="border p-3 rounded-md shadow-sm text-xl flex items-center justify-between">
                     <Link
                         to={`/vacancies/${vacancy.id}`}
                         className="text-blue-600 hover:underline"
                     >
                         {vacancy.name}
                     </Link>
+                    {candidateId && (
+                        <button
+                            onClick={() => handleRemove(vacancy.id)}
+                            className="text-red-500 hover:text-red-700 ml-4"
+                            title="Видалити кандидата з вакансії"
+                        >
+                            <FiTrash2 />
+                        </button>
+                    )}
                 </div>
             ))}
 
