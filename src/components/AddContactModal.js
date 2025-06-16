@@ -3,7 +3,7 @@ import api from "../api/axiosInstance";
 import toast from "react-hot-toast";
 
 function AddContactModal({ ownerId, ownableType, onClose, onSuccess }) {
-    const [contactType, setContactType] = useState("MAIN_EMAIL");
+    const [contactType, setContactType] = useState("EMAIL");
     const [contact, setContact] = useState("");
 
     const handleSubmit = async () => {
