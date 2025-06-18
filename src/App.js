@@ -1,5 +1,5 @@
 import React from 'react';
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, useLocation} from 'react-router-dom';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FinishRegistrationPage from "./pages/FinishRegistrationPage";
@@ -24,6 +24,9 @@ import { Toaster as HotToaster } from 'react-hot-toast';
 import UserActivityReportPage from "./pages/UserActivityReportPage";
 
 export default function App() {
+    const location = useLocation();
+    const isFinishPage = location.pathname === '/finish';
+
     function HomeRoute() {
         const userId = getUserId();
         return userId ? <MainPage /> : <HomePageGuest />;
@@ -35,9 +38,11 @@ export default function App() {
             </header>
 
             <div className="flex h-full">
+                {!isFinishPage && (
                 <aside className="w-64 p-4 min-h-screen">
                     <Sidebar/>
                 </aside>
+                )}
 
                 <main className="flex-1 p-10">
 
