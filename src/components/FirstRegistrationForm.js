@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import {toast} from "react-toastify";
 import axios from "axios";
 import {FiEye, FiEyeOff} from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
-export default function CompanyRegistration() {
+export default function CompanyRegistration({ onSuccess }) {
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         firstName: '',
         lastName: '',
@@ -47,6 +49,8 @@ export default function CompanyRegistration() {
         try {
             const response = await axios.post('http://localhost:8081/api/auth/register', form);
             toast.success('Компанію зареєстровано. Перевірте пошту');
+            if (onSuccess) onSuccess();
+            navigate("/");
             console.log(response.data);
         } catch (error) {
             toast.error('Щось пішло не так 😬');

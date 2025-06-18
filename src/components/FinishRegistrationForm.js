@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-export default function FinishRegistrationForm() {
+export default function FinishRegistrationForm({onSuccess}) {
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         email: '',
         password: '',
@@ -25,6 +27,8 @@ export default function FinishRegistrationForm() {
         try {
             const response = await axios.post('http://localhost:8081/api/auth/continue-registration', form);
             toast.success('Для завершення перевірте пошту');
+            if (onSuccess) onSuccess();
+            navigate("/");
             console.log(response.data);
         } catch (error) {
             toast.error('Щось пішло не так 😬');
