@@ -4,11 +4,13 @@ import {getUserId} from '../utils/auth';
 import ContactList from '../components/ContactList';
 import AddressBlock from '../components/AddressBlock';
 import VacancyList from '../components/VacancyList';
+import {useNavigate} from "react-router-dom";
 
 export default function AddClientPage() {
     const [formData, setFormData] = useState({name: '', email: ''});
     const [client, setClient] = useState(null);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -26,6 +28,7 @@ export default function AddClientPage() {
                 }
             });
             setClient(response.data);
+            navigate(`/clients/${response.data.id}`);
         } catch (err) {
             setError('Не вдалося створити замовника');
             console.error(err);

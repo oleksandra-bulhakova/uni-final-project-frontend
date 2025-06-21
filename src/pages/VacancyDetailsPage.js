@@ -83,7 +83,10 @@ const VacancyDetailsPage = () => {
 
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
                 <h2 className="font-semibold text-xl text-gray-700">Опис:</h2>
-                <p className="text-gray-700">{vacancy.description || '—'}</p>
+                <div
+                    className="text-gray-700 whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{__html: vacancy.description?.replace(/\n/g, "<br/>") || '—'}}
+                />
             </div>
 
             <EditVacancyTechnologiesBlock

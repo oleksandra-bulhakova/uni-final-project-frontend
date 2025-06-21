@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {FiEye, FiEyeOff} from "react-icons/fi";
 
 export default function FinishRegistrationForm({onSuccess}) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const navigate = useNavigate();
     const [form, setForm] = useState({
         email: '',
@@ -49,20 +52,38 @@ export default function FinishRegistrationForm({onSuccess}) {
                            className="rounded-xl px-4 py-2 border border-gray-300 w-full"/>
                 </div>
 
-                <div>
+                <div className="relative">
                     <label className="block mb-1 text-[#2e2e3a] font-medium">
                         Пароль<span className="text-red-500 ml-1">*</span>
                     </label>
                     <input name="password" value={form.password} onChange={handleChange}
-                           className="rounded-xl px-4 py-2 border border-gray-300 w-full" type="password"/>
+                           className="rounded-xl px-4 py-2 border border-gray-300 w-full"
+                           type={showPassword ? 'text' : 'password'}/>
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-9 text-gray-500"
+                    >
+                        {showPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+                    </button>
+
                 </div>
 
-                <div>
+                <div className="relative">
                     <label className="block mb-1 text-[#2e2e3a] font-medium">
                         Повторіть пароль<span className="text-red-500 ml-1">*</span>
                     </label>
                     <input name="confirmPassword" value={form.confirmPassword} onChange={handleChange}
-                           className="rounded-xl px-4 py-2 border border-gray-300 w-full" type="password"/>
+                           className="rounded-xl px-4 py-2 border border-gray-300 w-full"
+                           type={showConfirmPassword ? 'text' : 'password'}/>
+
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-9 text-gray-500"
+                    >
+                        {showConfirmPassword ? <FiEyeOff size={20}/> : <FiEye size={20}/>}
+                    </button>
                 </div>
 
                 <button type="submit"

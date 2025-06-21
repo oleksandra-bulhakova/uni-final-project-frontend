@@ -116,12 +116,12 @@ const ClientDetailsPage = () => {
                 <strong>Дата реєстрації:</strong> {client.registrationDate}
             </p>
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
-                <ClientAddressBlock address={client.address} clientId={clientId} onAddressAdded={fetchClient}/>
+                <ClientAddressBlock address={client.address} ownerId={clientId} onAddressAdded={fetchClient}/>
             </div>
             <div className="bg-gray-200 rounded-xl p-4 shadow-sm mb-4">
                 <ContactList
                     contacts={client.contacts}
-                    ownerId={client.id}
+                    ownerId={clientId}
                     ownableType="CLIENT"
                     onContactAdded={fetchClient}
                 />
